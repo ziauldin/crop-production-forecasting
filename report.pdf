@@ -1,0 +1,183 @@
+
+
+BUILD A MULTILAYER PERCEPTRON MODEL THAT CAN BE USED FOR FORECASTING THE EXPORT VALUE OF CROP PRODUCTS FOR A GEOGRAPHICAL REGION THREE YEARS INTO THE FUTURE.
+
+
+Contents
+1. Performance
+2. MLP Model
+3. Loss Function
+4. Features and Labels
+5. Preprocessing
+6. Summary of Preprocessing Steps
+7. Reference
+
+
+1. Performance:
+We will use Mean Squared Error Metric to report the performance of MLP model.
+The Mean Squared Error metric is a simple technique used in regression task to evaluate the performance of MLP. Then, in between actual and predicted value, it calculates the average squared difference. The mathematical formula for MSE is:
+MSE=  1/n ∑_(i-1)^n▒(y_i-y ̂_i )^2 
+Where,
+	n being the number of instances.
+	Yi being the actual value for i-th instance.
+	y-hat i being the predicted value for i-th instance.
+To compute the MSE metric, we use the mean square error function imported from ‘Scikit-learn’. The MSE will quantify the prediction accuracy with lower values indicating more precise predictions.
+The coding part is as follows.
+ 
+
+Instances:
+To describe the model, the dataset is divided into training and testing sets which are as follows.
+	Total number of instances: 9519
+	Number of Instances used for training set: 7615 (80% of the data)
+	Number of Instances used for testing data: 1904 (20% of the data)
+ 
+
+Performance Summary:
+The performance of the Multilayer Perceptron (MLP) model was evaluated using the Mean Squared Error (MSE), which is arguably the most important metric for regression problems. It calculates the average of the squares of the difference between the actual and predicted values. The lower the value of Mean Squared Error, the better the model. The dataset was split into 7,615 training observations (80%) and 1,904 testing observations (20%) using `train_test_split`. The final value of MSE obtained using `mean_squared_error` from `scikit-learn` helps us understand the extent to which the model can accurately predict the export value of crop products.
+
+2. MLP Model:
+Model architecture consists of three layers that are used to forecast the export value of crop products. these layers are as follows:
+1.Data Layer:
+	Takes the data as the input.
+	Comparing the number of columns with the number of inputs. 
+	In our case, after preprocessing we have n feature.
+2.Inner Layer:
+	First inner layer with 64-units with ReLU function.
+
+ReLU(x) = max(0,x)
+	Second hidden layer with 32-units with ReLU function.
+	It introduces non-linearity in the model.
+3. Prediction Layer:
+	The unit alongside a linear function, which is approximately appropriate for regression tasks where we predict continuous values. The function for the prediction layer is described below;
+
+Output(x) = x
+ 
+
+Loss Function:
+The loss function is an important part of training machine learning models, especially in regression projects such as the one focused on our MLP model. In this context, the loss function quantifies the discrepancies between the actual data and the model’s predictions. In the case of the MLP model for predicting crop production, the most suitable loss function is the Mean Squared Error (MSE). Mathematical formula for MSE is:
+MSE=  1/n ∑_(i-1)^n▒(y_i-y ̂_i )^2 
+Where,
+	n being the number of instances.
+	yi being the actual value for the i-th instance.
+	y-hat I being the predicted value for the i-th instance.
+
+Based on this, the model is compiled using the Adam optimizer which is a stochastic optimization algorithm. The Adam optimizer is an adaptation of the stochastic gradient descent method in finding an optimal solution for given problems and overcomes issues with sparse gradients on noisy data.
+
+The training is performed using a training set with 20% split for validation, and it iterates for 50 epochs with 32 batch size.
+ 
+This is because in this specific MLP model, there are specific architecture of the network, activation functions and even loss function that enable it to provide necessary features of crop products that in turn enables it to provide pertinent values of exports.
+2. Preventing Overfitting:
+To overcome the problem of overfitting in MLP model, there are some methods and techniques which applied to overcome. The problem of overfitting is when a model learns not only the true pattern of the data but also the unrelated noise. The outcomes are not reliable in the case of unseen data because of that. Following are the steps which are taken to minimize overfitting:
+1. Train-Test Split:
+In this step, we will divide the datasets into testing and training sets and through this, we will evaluate that the model's performance will be given over unseen (not presented earlier to the model) data what then gives us an evaluation metric of how well it would generalize. 
+Training set size = 0.8 x 100
+Testing set size = 0.2 x 100
+2. Validation Split:
+When models are being trained the validation set, which is a subset of the training data set, is being further split. These are useful to us in applications where we can analyze the performance of model upon new data during the process of training alongside necessary adjustments.
+Validation set size = 0.2 x Training set size
+3. Early Stopping:
+Early stopping is known as one of the techniques in training process when training comes in an end when model quality measured by its values on the validation set remains the same. This allows us to discard the errors in training data, hence that model will not proceed to the noise further.
+4. Regularization:
+Mathematically, L2 regularization (Ridge Regularization) was also added into the model to reduce large weight values and try to retain weights that are more generalizable.
+Regularization is a penalty to loss which is added to force the model simpler.
+L2 Penalty= λ∑_(j=1)^n▒ω_j^2 
+ 5. Dropout:
+Dropout is a technique by which neurons not used are avoided during training through ignoring randomly selected neurons. This will further direct the relationship between neurons so that the network will be more resilient. 
+Drop-Out Rate = 0.5
+6. Data Swapping:
+ Data augmentation presents a viable avenue for models dealing with image or sequence data by applying techniques such as rotating, flipping, or adding noise. These techniques help diversify the training data and thus reduce overfitting, which is critical for ensuring model accuracy. In multi-dimensional data synthetic data generation methods may apply.
+7. Simplifying the Model:
+Occasionally working with a simpler model with hardly figuring out and does not completely help in the instance of overfitting. Our model includes two hidden layers with a relatively little unit count (64 units and 32 units), where capacity and generalization are also balanced.
+In other words, the methods applied to the model guarantee that it will learn more from fresh data, therefore, will lead to more accurate predictions and higher stability of that model. These steps enhanced the overall generalization of the model and the generated weights, with fewer chances to over-fit the model on the training data than in the previous case.
+
+
+3. Features and Labels:
+Labels:
+1.Data Collection:
+The first set of input data was acquired, which concerned crop production features and possible other variables such as economic performance indicators. Out of these columns, there was a particular column that reflected the export value of crop products, known as the ‘export_value’.
+2. Selection:
+The last column in the data frame was chosen as the label to be used for the regression model and it was named ‘export_value’. Depending on the type of problem, this variable could be the one that the model tries to estimate by using the input characteristics.
+3.Data Cleaning:
+The ‘export_value’ was also scrubbed to address any missing or invalid entries in the dataset. This step made it possible to ensure that the target variable is accurate and complete.
+4.Feature and Label Separation:
+Next, it was divided into features (the input variables) and labels (the target variable). The features were used as inputs to the model whereas the column “export_value” used as the labels.
+5.Normalization:
+There are occasions when the labels must be preprocessed to make the process of training easier in some way. However, in regression models, the key variable is often left in its original units of measurement.
+6.Handling Categorical data:
+If ‘export_value’ was affected by categorical features, these features were engineered properly. Still, concerning the ‘export_value’, it was a continuous variable and was kept that way.
+7.Splitting:
+The data was then split into a training set and test set for assessment of the prepared model. The training and testing data set would be defined using the ‘export_value’ column labels.  
+8.Label Distribution Analysis:
+Finally, this study will evaluate the-normality of the ‘export_value’ distribution to ensure the appropriateness of the distribution for the range of values being analyzed. It could carry out tests like checking for skewness or exploring the cases of outliers.
+Features:
+On the context of agricultural analysis, the option of number of features ensures that all the possible factors that can affect crop yield are captured. The subsequent 13 features have been chosen with great consideration for how they contribute to agriculture and the global food systems. The features are described below.
+	Consumer Prices
+	Crops Production
+	Emissions
+	Employment
+	Exchange Rate
+	Fertilizers Use
+	Food Balances
+	Food Security
+	Food Trade
+	Foreign Investment
+	Land Temperature Change
+	Land Use
+	Pesticides Use
+
+As these are 13 different data, I merged them into a single file based on the year and area.
+To forecast the crop product, I used the year, area, and the crop production to evaluate the result.
+	
+4. Preprocessing:
+For preprocessing, the features may involve different transformations and scaling in order to get the data ready to be trained on the Multilayer Perceptron (MLP) model. Below is the preprocessing procedure with the corresponding explanation.
+	Handling Missing values
+Replace missing values∶ x_i→Imputation strategy
+	Ensuring Categorical variables
+Categorical feature∶x_i= {A,B,C}→One-hot encoded vectors
+	Standardization
+Standardization: x_i^'=  (x_i-μ)/σ
+	Normalization
+Normalization∶ x_i^'=  (x_i-min⁡(x))/(max⁡(x)-min⁡(x))
+	Dimensionality Reduction
+Dimensionality Reduction∶ x_i^'= PCA(x_i)
+Summary of Preprocessing Steps:
+
+Handling Missing Values: 
+Otherwise, place missing data back imputed or removed in order to get the best datasets with fewer or, at any rate, acceptable missing data. 
+
+Feature Selection: 
+Features best suited to be incorporated into building the model from the Exploratory Data Analysis of WDBC benign and malignant cancer samples. 
+
+Encoding Categorical Variables:
+ One was able to achieve this by hot encoding some of the data that It deemed to be categorical in nature to obtain a numerical version of them. 
+
+Scaling Numerical Features:
+ It has also been normalized being standardized to the mean zero and standard deviation one substructure so that each numerical feature must be normalized. 
+
+Combining Features:
+ Joined the numerical and the categorical features into one feature matrix after some of the observations had missing data. 
+
+Splitting the Data: 
+While analyzing the results of utilizing a particular model, use train and test datasets obtained from the collected data. 
+
+Pipeline Implementation: 
+In this way, to include the precondition of the features from the different columns consistently, the ColumnTransformer was applied. 
+
+These preprocessing steps helped the data to be preprocessed with a proper format concerning the succeeding training of the MLP model.
+
+Reference:
+The study of agricultural data, information, and knowledge is extremely important to enable the provisioning of sustainable and improved agriculture and food security worldwide. The FAOSTAT of the Food and Agriculture Organization of the United Nations offers a broad.
+General information in the domain of agriculture, economy and environment is available in the form of various datasets. These datasets prove beneficial to insurance providers, scholars, economists, legislators, and overseers involved in the improvement of food continuity, rural economy, and agriculture based sustainable farming. The references of data that are taken are as given below.
+	Consumer prices indicators (https://www.fao.org/faostat/en/#data/CP)
+	Crops production indicators (https://www.fao.org/faostat/en/#data/QCL)
+	Emissions (https://www.fao.org/faostat/en/#data/GCE & https://www.fao.org/faostat/en/#data/GV)
+	Employment (https://www.fao.org/faostat/en/#data/OEA) 
+	Exchange rate (https://www.fao.org/faostat/en/#data/PE)
+	Fertilizers use (https://www.fao.org/faostat/en/#data/RFB)
+	Food balances indicators (https://www.fao.org/faostat/en/#data/FBS)
+	Food security indicators (https://www.fao.org/faostat/en/#data/FS)
+	Food trade indicators (https://www.fao.org/faostat/en/#data/TCL)
+	Foreign direct investment (https://www.fao.org/faostat/en/#data/FDI)
+	Land temperature change (https://www.fao.org/faostat/en/#data/ET)
+	Land use (https://www.fao.org/faostat/en/#data/RL
+	Pesticides use (https://www.fao.org/faostat/en/#data/RP)
