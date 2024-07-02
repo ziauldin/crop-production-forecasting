@@ -1,0 +1,168 @@
+#Import Necessary Libraries
+import pandas as pd
+# Function to clean column names while loading data
+def clean_column_names(df):
+    df.columns = df.columns.str.replace(' ', '_').str.lower()
+    return df
+
+# Load datasets
+consumer_prices = clean_column_names(pd.read_csv('Consumer prices indicators - FAOSTAT_data_en_2-22-2024.csv'))
+crops_production = clean_column_names(pd.read_csv('Crops production indicators - FAOSTAT_data_en_2-22-2024.csv'))
+emissions = clean_column_names(pd.read_csv('Emissions - FAOSTAT_data_en_2-27-2024.csv'))
+employment = clean_column_names(pd.read_csv('Employment - FAOSTAT_data_en_2-27-2024.csv'))
+exchange_rate = clean_column_names(pd.read_csv('Exchange rate - FAOSTAT_data_en_2-22-2024.csv'))
+fertilizers_use = clean_column_names(pd.read_csv('Fertilizers use - FAOSTAT_data_en_2-27-2024.csv'))
+food_balances = clean_column_names(pd.read_csv('Food balances indicators - FAOSTAT_data_en_2-22-2024.csv'))
+food_security = clean_column_names(pd.read_csv('Food security indicators  - FAOSTAT_data_en_2-22-2024.csv'))
+food_trade = clean_column_names(pd.read_csv('Food trade indicators - FAOSTAT_data_en_2-22-2024.csv'))
+foreign_investment = clean_column_names(pd.read_csv('Foreign direct investment - FAOSTAT_data_en_2-27-2024.csv'))
+land_temp_change = clean_column_names(pd.read_csv('Land temperature change - FAOSTAT_data_en_2-27-2024.csv'))
+land_use = clean_column_names(pd.read_csv('Land use - FAOSTAT_data_en_2-22-2024.csv'))
+pesticides_use = clean_column_names(pd.read_csv('Pesticides use - FAOSTAT_data_en_2-27-2024.csv'))
+
+# Dictionary of dataset names and dataframes
+datasets = {
+    "Consumer Prices": consumer_prices,
+    "Crops Production": crops_production,
+    "Emissions": emissions,
+    "Employment": employment,
+    "Exchange Rate": exchange_rate,
+    "Fertilizers Use": fertilizers_use,
+    "Food Balances": food_balances,
+    "Food Security": food_security,
+    "Food Trade": food_trade,
+    "Foreign Investment": foreign_investment,
+    "Land Temperature Change": land_temp_change,
+    "Land Use": land_use,
+    "Pesticides Use": pesticides_use
+}
+# Inspect the columns in each dataset
+for table_name, df in datasets.items():
+    print(f"Columns in {table_name} dataframe:")
+    print(df.columns, "\n")
+# Function to process dataframe
+def process_dataframe(df, table_name):
+    # Ensure 'year' and 'area' columns are of the same data type
+    df['year'] = df['year'].astype(str)
+    df['area'] = df['area'].astype(str)
+    
+    if 'year' in df.columns and 'area' in df.columns and 'value' in df.columns:
+        grouped_df = df.groupby(['year', 'area'])['value'].mean().reset_index()
+        new_column_name = f"{table_name}_value"
+        grouped_df.rename(columns={'value': new_column_name}, inplace=True)
+        return grouped_df
+    else:
+        print(f"Skipping dataframe due to missing 'year', 'area', or 'value' columns.")
+        return None
+# Process each dataframe
+processed_dfs = {}
+for table_name, df in datasets.items():
+    processed_df = process_dataframe(df, table_name)
+    if processed_df is not None:
+        processed_dfs[table_name] = processed_df
+
+# Display the first few rows of each processed dataframe
+for table_name, df in processed_dfs.items():
+    print(f"Processed {table_name} dataframe:")
+    print(df.head(), "\n")
+    
+# Merge all processed dataframes on 'year' and 'area'
+merged_df = None
+
+for table_name, df in processed_dfs.items():
+    if merged_df is None:
+        merged_df = df
+    else:
+        merged_df = pd.merge(merged_df, df, on=['year', 'area'], how='outer')
+
+# Display the first few rows of the merged dataframe
+print("Merged DataFrame:")
+merged_df.info()
+# Drop rows where 'Land Use_value' has NaN values
+if 'Land Use_value' in merged_df.columns:
+    merged_df = merged_df.dropna(subset=['Land Use_value'])
+
+# Count the values in the 'year' column
+merged_df.info()
+# Fill NaN values with the mean of each numeric column
+numeric_cols = merged_df.select_dtypes(include=['number']).columns
+merged_df[numeric_cols] = merged_df[numeric_cols].fillna(merged_df[numeric_cols].mean())
+
+# Display the information of the final merged dataframe
+merged_df.info()
+
+# Display the first few rows of the final merged dataframe
+print(merged_df.head(190))
+# Save the merged dataframe to a CSV file
+merged_df.to_csv('data.csv', index=False)
+
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+# Select numerical and categorical columns
+numerical_cols = X.select_dtypes(include=np.number).columns
+categorical_cols = X.select_dtypes(exclude=np.number).columns
+
+# Define preprocessing steps
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numerical_cols),
+        ('cat', OneHotEncoder(), categorical_cols)
+    ])
+
+# Apply preprocessing to training data
+X_train_preprocessed = preprocessor.fit_transform(X_train)
+X_test_preprocessed = preprocessor.transform(X_test)
+
+# Define the MLP model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(X_train_preprocessed.shape[1],)),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(1)  # Output layer with linear activation for regression
+])
+
+# Compile the model
+model.compile(optimizer='adam', loss='mean_squared_error')
+
+# Train the model
+model.fit(X_train_preprocessed, y_train, epochs=50, batch_size=32, validation_split=0.2)
+
+# Evaluate the model
+test_loss = model.evaluate(X_test_preprocessed, y_test)
+print("Test Loss:", test_loss)
+# Evaluate the model
+test_loss = model.evaluate(X_test_preprocessed, y_test)
+print("Test Loss (MSE):", test_loss)
+
+# Compute RMSE
+rmse = np.sqrt(test_loss)
+print("Root Mean Squared Error (RMSE):", rmse)
+import pandas as pd
+
+# Assuming you have true labels for the test instances (replace true_labels with your actual true labels)
+true_labels = y_test  # Assuming y_test contains the true labels for test instances
+
+# Use the trained model to make predictions on the test data
+predictions = model.predict(X_test_preprocessed)
+
+# Create a DataFrame with instance IDs, true labels, and predicted values
+predictions_df = pd.DataFrame({
+    'Instance_ID': range(len(predictions)),  # Generate a sequence of numbers as identifiers
+    'True_Label': true_labels.values.flatten(),  # Convert the Series to a numpy array and flatten
+    'Predicted_Value': predictions.flatten()
+})
+
+# Display the prediction DataFrame
+print(predictions_df)
+
+# Save the DataFrame to a CSV file
+predictions_df.to_csv('predictions.csv', index=False)
+total_instances = len(data)
+print("Total number of instances:", total_instances)
+# Number of instances in training and test sets
+num_train_instances = len(X_train)
+num_test_instances = len(X_test)
+
+print("Number of instances in the training set:", num_train_instances)
+print("Number of instances in the test set:", num_test_instances)
+model.compile(optimizer='adam', loss='mean_squared_error')
