@@ -9,7 +9,7 @@ The primary goal of this project is to forecast crop production using historical
 # Contents
 
 - `Data`: List of the 13 FAOSTAT datasets used, with their source links.
-- `scripts`: Python script for data loading, cleaning, merging, and modeling.
+- `scripts`: Python script that loads, cleans, and merges the FAOSTAT datasets.
 - `Crop Production.ipynb`: Jupyter notebook that documents the analysis and modeling process.
 - `report.pdf`: The comprehensive report detailing the methodologies, analysis, and results.
 - `requirements.txt`: Python packages needed to run the notebook and script.
