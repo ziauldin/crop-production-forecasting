@@ -8,11 +8,11 @@ The primary goal of this project is to forecast crop production using historical
 
 # Contents
 
-- `data/`: Contains the datasets used for the analysis.
-- `scripts/`: Contains the scripts used for data preprocessing, analysis, and modeling.
-- `notebooks/`: Jupyter notebooks that document the analysis and modeling process.
-- `results/`: Contains the results of the analysis, including visualizations and forecasts.
+- `Data`: List of the 13 FAOSTAT datasets used, with their source links.
+- `scripts`: Python script for data loading, cleaning, merging, and modeling.
+- `Crop Production.ipynb`: Jupyter notebook that documents the analysis and modeling process.
 - `report.pdf`: The comprehensive report detailing the methodologies, analysis, and results.
+- `requirements.txt`: Python packages needed to run the notebook and script.
 
 # Getting Started
 
@@ -61,5 +61,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 Acknowledgements
 The data used in this project was obtained from various agricultural databases.
 Special thanks to everyone who contributed to the project.
-
-This `README.md` provides a clear overview of the project, its structure, and how to get started. You can adjust the sections as needed based on the specifics of your project.
